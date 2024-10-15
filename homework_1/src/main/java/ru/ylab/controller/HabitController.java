@@ -37,7 +37,7 @@ public class HabitController {
                     habit();
                 }
                 System.out.println("Обновление привычки");
-                person.getAllHabits();
+                person.toStringListHabits(habits);
                 Habit habit = getHabitByIndex();
                 new HabitUpdateController(habit, person, database).habitUpdate();
                 System.out.println("Обновлена привычка " + habit);
@@ -49,7 +49,7 @@ public class HabitController {
                     habit();
                 }
                 System.out.println("Удаление привычки");
-                person.getAllHabits();
+                person.toStringListHabits(habits);
                 Habit habit = getHabitByIndex();
                 habitService.delete(habit);
                 habit();

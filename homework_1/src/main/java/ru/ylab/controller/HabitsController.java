@@ -6,22 +6,23 @@ import ru.ylab.service.ScannerService;
 
 public class HabitsController {
     private final Person person;
+    private final Database database;
     private final ScannerService scannerService = new ScannerService();
-    private final HabitController habitController;
-    private final AccountController accountController;
 
     public HabitsController(Person person, Database database) {
         this.person = person;
-        accountController = new AccountController(person, database);
-        habitController = new HabitController(person, database);
+        this.database = database;
     }
 
     public void habits() {
+        AccountController accountController = new AccountController(person, database);
+        HabitController habitController = new HabitController(person, database);
+        ViewHabitsController viewHabitsController = new ViewHabitsController(person, database);
+
         System.out.println("\t\tУправление привычками " + person);
         switch (scannerService.menuHabits()) {
             case "1": {
-                person.getAllHabits();
-                habits();
+                viewHabitsController.view();
             }
             case "2": {
                 habitController.habit();

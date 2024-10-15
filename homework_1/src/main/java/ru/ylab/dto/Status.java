@@ -21,6 +21,10 @@ public class Status {
         return time;
     }
 
+    public void setStatusType(String type) {
+        this.statusType = statusType;
+    }
+
     @Override
     public String toString() {
         return "Status{" +

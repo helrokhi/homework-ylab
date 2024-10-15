@@ -38,7 +38,7 @@ public class TrackingHabitsController {
                     System.out.println("Отметить выполнение невозможно список привычек пуст");
                     tracking();
                 }
-                person.getAllHabits();
+                person.toStringListHabits(habits);
                 Habit habit = getHabitByIndex();
                 int index = habits.indexOf(habit);
                 Status status = new Status(StatusType.EXECUTE, OffsetDateTime.now());
@@ -53,7 +53,7 @@ public class TrackingHabitsController {
                             " невозможно список привычек пуст");
                     tracking();
                 }
-                person.getAllHabits();
+                person.toStringListHabits(habits);
                 Habit habit = getHabitByIndex();
                 System.out.println("История привычки " + habit);
                 System.out.println(habitService.getHistory(habit));

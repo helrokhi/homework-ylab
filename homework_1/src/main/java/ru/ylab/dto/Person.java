@@ -69,8 +69,7 @@ public class Person {
                 .collect(Collectors.toList());
     }
 
-    public void getAllHabits() {
-        ArrayList<Habit> habits = getHabits();
+    public void toStringListHabits(List<Habit> habits) {
         if (habits.isEmpty()) {
             System.out.println("Нет привычек у пользователя");
         } else {

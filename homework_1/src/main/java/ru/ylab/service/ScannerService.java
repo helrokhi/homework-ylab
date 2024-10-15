@@ -50,6 +50,18 @@ public class ScannerService {
         return scanner.nextLine().trim();
     }
 
+    public String menuViewHabits() {
+        scanner = new Scanner(System.in);
+        System.out.println(
+                "\t\t\tСписок всех привычек пользователя нажмите 1\n" +
+                        "\t\t\tСписок всех привычек пользователя," +
+                        "отсортированный по дате создания, напишите sort\n" +
+                        "\t\t\tСписок всех привычек пользователя со статусом «Выполнена» напишите execute\n" +
+                        "\t\t\tСписок всех привычек пользователя со статусом «Не выполнена» напишите no\n" +
+                        "\t\t\tВернуться в предыдущее меню нажмите 0");
+        return scanner.nextLine().trim();
+    }
+
     public String habitManagementMenu (){
         scanner = new Scanner(System.in);
         System.out.println(
