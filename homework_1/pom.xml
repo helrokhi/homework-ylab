@@ -2,44 +2,122 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
+  <groupId>ru.ylab</groupId>
   <artifactId>homework_1</artifactId>
   <name>habit-tracking-app</name>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <db.host>localhost</db.host>
+        <db.login>admin</db.login>
+        <db.password>11111111</db.password>
+        <db.name>tracking_habit</db.name>
+        <db.url>jdbc:postgresql://${db.host}/${db.name}</db.url>
+        <docker.db.url>jdbc:postgresql://${db.host}:5432/${db.name}</docker.db.url>
+        <liquibase.changeLogFile>src/main/resources/db/changelog/master.xml</liquibase.changeLogFile>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.1</version>
-      <scope>test</scope>
-    </dependency>
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <env>docker</env>
+                <db.host>${db.host}</db.host>
+                <db.login>${db.login}</db.login>
+                <db.password>${db.password}</db.password>
+                <db.database>${db.name}</db.database>
+                <db.url>${docker.db.url}</db.url>
+            </properties>
+        </profile>
+    </profiles>
 
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>RELEASE</version>
-      <scope>test</scope>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
 
-  </dependencies>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.29.0</version>
+        </dependency>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>11</source>
-          <target>11</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-api</artifactId>
+            <version>1.9.18</version>
+        </dependency>
+
+        <!--LOMBOK-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>15</source>
+                    <target>15</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>4.20.0</version>
+                <configuration>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>${db.url}</url>
+                    <username>${db.login}</username>
+                    <password>${db.password}</password>
+                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>

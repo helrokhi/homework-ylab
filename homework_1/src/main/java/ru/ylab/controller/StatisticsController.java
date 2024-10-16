@@ -1,23 +1,18 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
 
+@AllArgsConstructor
 public class StatisticsController {
-    private final Person person;
-    private final Database database;
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
 
-    public StatisticsController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-    }
+    public void statistics() {
+        System.out.println("Статистика и аналитика пользователя " + person);
 
-    public void statistics(){
-        System.out.println("\t\tСтатистика и аналитика пользователя " + person);
-
-        AccountController accountController = new AccountController(person, database);
+        AccountController accountController = new AccountController();
         switch (scannerService.statisticsMenu()) {
             case "1": {
                 System.out.println("Подсчет текущих серий выполнения привычек\n");
@@ -35,10 +30,11 @@ public class StatisticsController {
                 statistics();
             }
             case "0": {
-                System.out.println("Вернуться в личный кабинет нажмите 0");
-                accountController.account();
+                System.out.println("Вернуться в личный кабинет");
+                accountController.account(person);
             }
-            default: accountController.account();
+            default:
+                accountController.account(person);
         }
     }
 }

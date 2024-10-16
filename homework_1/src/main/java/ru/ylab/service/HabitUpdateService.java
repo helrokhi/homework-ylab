@@ -1,23 +1,25 @@
 package ru.ylab.service;
 
-import ru.ylab.dto.Habit;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.HabitDto;
+import ru.ylab.repository.HabitRepository;
 
+@AllArgsConstructor
 public class HabitUpdateService {
-    private final Habit habit;
-
-    public HabitUpdateService(Habit habit) {
-        this.habit = habit;
-    }
+    private HabitDto habit;
 
     public void updateTitle(String title) {
-        habit.setTitle(title);
+        HabitRepository habitRepository = new HabitRepository();
+        habitRepository.updateHabitTitle(habit.getId(), title);
     }
 
     public void updateText(String text) {
-        habit.setText(text);
+        HabitRepository habitRepository = new HabitRepository();
+        habitRepository.updateHabitText(habit.getId(), text);
     }
 
     public void updateFrequency(String frequency) {
-        habit.setFrequency(frequency);
+        HabitRepository habitRepository = new HabitRepository();
+        habitRepository.updateHabitFrequency(habit.getId(), frequency);
     }
 }

@@ -1,34 +1,23 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Habit;
-import ru.ylab.dto.Person;
-import ru.ylab.dto.Status;
-import ru.ylab.dto.enums.StatusType;
-import ru.ylab.service.HabitService;
-import ru.ylab.service.ScannerService;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.*;
+import ru.ylab.service.*;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
+@AllArgsConstructor
 public class TrackingHabitsController {
-    private final Person person;
-    private final Database database;
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
-
-    private final HabitService habitService;
-
-    public TrackingHabitsController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-        habitService = new HabitService(person);
-    }
 
     public void tracking() {
         System.out.println("\t\tОтслеживание выполнения привычек пользователем " + person);
-        AccountController accountController = new AccountController(person, database);
+        AccountController accountController = new AccountController();
+        HabitService habitService = new HabitService(person);
+        HabitHistoryService habitHistoryService = new HabitHistoryService();
 
-        ArrayList<Habit> habits = person.getHabits();
+        ArrayList<HabitDto> habits = habitService.getHabits();
 
         switch (scannerService.trackingHabitsMenu()) {
             case "1": {
@@ -38,11 +27,12 @@ public class TrackingHabitsController {
                     System.out.println("Отметить выполнение невозможно список привычек пуст");
                     tracking();
                 }
-                person.toStringListHabits(habits);
-                Habit habit = getHabitByIndex();
-                int index = habits.indexOf(habit);
-                Status status = new Status(StatusType.EXECUTE, OffsetDateTime.now());
-                habitService.updateStatusHistory(index, status);
+                habitService.toStringListHabits(habits);
+                String index = scannerService.createIndexHabit();
+                HabitDto habit = habitService.getHabitByIndex(Long.valueOf(index));
+                RegStatus regStatus = new RegStatus("EXECUTE");
+
+                habitHistoryService.createStatus(habit, regStatus);
                 System.out.println("Выполнение отмечено " + habit);
                 tracking();
             }
@@ -53,10 +43,11 @@ public class TrackingHabitsController {
                             " невозможно список привычек пуст");
                     tracking();
                 }
-                person.toStringListHabits(habits);
-                Habit habit = getHabitByIndex();
+                habitService.toStringListHabits(habits);
+                String index = scannerService.createIndexHabit();
+                HabitDto habit = habitService.getHabitByIndex(Long.valueOf(index));
                 System.out.println("История привычки " + habit);
-                System.out.println(habitService.getHistory(habit));
+                System.out.println(habitHistoryService.getHistory(habit.getId()));
                 tracking();
             }
             case "3": {
@@ -67,23 +58,11 @@ public class TrackingHabitsController {
                 tracking();
             }
             case "0": {
-                System.out.println("Вернуться в личный кабинет нажмите 0");
-                accountController.account();
+                System.out.println("Вернуться в личный кабинет");
+                accountController.account(person);
             }
             default:
-                accountController.account();
+                accountController.account(person);
         }
-    }
-
-    private Habit getHabitByIndex() {
-        String index = scannerService.createIndexHabit();
-        Habit habit = null;
-        try {
-            habit = habitService.getHabitByIndex(index);
-        } catch (Exception ex) {
-            System.out.println("Такой привычки нет.");
-            tracking();
-        }
-        return habit;
     }
 }

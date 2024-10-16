@@ -1,35 +1,31 @@
 package ru.ylab.service;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import ru.ylab.dto.PersonDto;
+import ru.ylab.dto.RegUser;
+import ru.ylab.dto.UserAuthDto;
+import ru.ylab.repository.UserRepository;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserService {
-    private final Person person;
-    private final Database database;
-
-    public UserService(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-    }
-
-    public void updateName(String name) {
-        person.setName(name);
-        System.out.println("Имя пользователя изменено " + person);
-    }
+    private PersonDto person;
 
     public void updateEmail(String email) {
-        person.getUser().setEmail(email);
-        System.out.println("Email пользователя изменен " + person);
+        UserRepository userRepository = new UserRepository();
+        UserAuthDto userAuthDto = userRepository.updateUserEmail(person.getUserId(), email);
+        System.out.println("Email пользователя изменен " + person + " " + userAuthDto);
     }
 
     public void updatePassword(String password) {
-        person.getUser().setPassword(password);
-        System.out.println("Пароль пользователя изменен " + person);
+        UserRepository userRepository = new UserRepository();
+        UserAuthDto userAuthDto = userRepository.updateUserPassword(person.getUserId(), password);
+        System.out.println("Пароль пользователя изменен " + person + " " + userAuthDto);
     }
 
-    public void delete() {
-        database.removePerson(person);
-        database.removeUser(person.getUser());
-        System.out.println("Пользователь удален " + person);
+    public UserAuthDto getUserByEmail(RegUser regUser) {
+        UserRepository userRepository = new UserRepository();
+        return (regUser != null) ? userRepository.getUserAuthDtoByEmail(regUser.getEmail()) : null;
     }
 }

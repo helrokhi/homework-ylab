@@ -1,35 +1,29 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.PersonDto;
+import ru.ylab.service.PersonService;
 import ru.ylab.service.ScannerService;
 import ru.ylab.service.UserService;
 
-import java.util.Scanner;
-
+@AllArgsConstructor
 public class UserController {
-    private final Person person;
-    private final Database database;
-
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
-    private final UserService userService;
-
-    public UserController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-        userService = new UserService(person, database);
-    }
 
     public void user() {
         System.out.println("\t\tУправление пользователем " + person);
 
-        AccountController accountController = new AccountController(person, database);
-        AuthController authController = new AuthController(database);
+        AccountController accountController = new AccountController();
+        AuthController authController = new AuthController();
+
+        UserService userService = new UserService(person);
+        PersonService personService = new PersonService(person);
 
         switch (scannerService.userManagementMenu()) {
             case "1": {
                 String name = scannerService.updateNamePerson(person);
-                userService.updateName(name);
+                personService.updateName(name);
                 user();
             }
             case "2": {
@@ -42,16 +36,15 @@ public class UserController {
                 userService.updatePassword(password);
                 user();
             }
-            case "delete": {
-                userService.delete();
+            case "DELETE": {
+                personService.delete(person);
                 authController.start();
-                user();
             }
             case "0": {
-                accountController.account();
+                accountController.account(person);
             }
             default:
-                accountController.account();
+                accountController.account(person);
         }
     }
 }

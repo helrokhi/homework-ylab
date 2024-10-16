@@ -1,25 +1,20 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
 
+@AllArgsConstructor
 public class HabitsController {
-    private final Person person;
-    private final Database database;
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
 
-    public HabitsController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-    }
-
     public void habits() {
-        AccountController accountController = new AccountController(person, database);
-        HabitController habitController = new HabitController(person, database);
-        ViewHabitsController viewHabitsController = new ViewHabitsController(person, database);
+        AccountController accountController = new AccountController();
+        HabitController habitController = new HabitController(person);
+        ViewHabitsController viewHabitsController = new ViewHabitsController(person);
 
-        System.out.println("\t\tУправление привычками " + person);
+        System.out.println("Управление привычками " + person);
         switch (scannerService.menuHabits()) {
             case "1": {
                 viewHabitsController.view();
@@ -28,10 +23,10 @@ public class HabitsController {
                 habitController.habit();
             }
             case "0": {
-                accountController.account();
+                accountController.account(person);
             }
             default:
-                accountController.account();
+                accountController.account(person);
         }
     }
 }

@@ -1,61 +1,58 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Habit;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.*;
 import ru.ylab.dto.enums.StatusType;
+import ru.ylab.service.HabitService;
 import ru.ylab.service.ScannerService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 public class ViewHabitsController {
-    private final Person person;
-    private final Database database;
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
 
-    public ViewHabitsController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-    }
-
     public void view() {
-        HabitsController habitsController = new HabitsController(person, database);
-        ArrayList<Habit> habits = person.getHabits();
+        HabitsController habitsController = new HabitsController(person);
 
-        System.out.println("\t\tПросмотр привычек:");
+        HabitService habitService = new HabitService(person);
+        ArrayList<HabitDto> habits = habitService.getHabits();
+
+        System.out.println("Просмотр привычек:");
         switch (scannerService.menuViewHabits()) {
             case "1": {
-                System.out.println("\t\t\tСписок всех привычек пользователя");
-                person.toStringListHabits(habits);
+                System.out.println("Список всех привычек пользователя");
+                habitService.toStringListHabits(habits);
                 view();
             }
             case "sort": {
-                System.out.println("\t\t\tСписок всех привычек пользователя," +
-                                "отсортированный по дате создания");
-                List<Habit> sortHabits = person.getSortHabitsByTime();
-                person.toStringListHabits(sortHabits);
+                System.out.println("Список всех привычек пользователя," +
+                        "отсортированный по дате создания");
+                List<HabitDto> sortHabits = habitService.getSortHabitsByTime(habits);
+                habitService.toStringListHabits(sortHabits);
                 view();
             }
             case "execute": {
-                System.out.println("\t\t\tСписок всех привычек пользователя со статусом «Выполнена»");
+                System.out.println("Список всех привычек пользователя со статусом «Выполнена»");
                 String status = StatusType.EXECUTE.name();
-                List<Habit> executeHabits = person.getSortHabitsByStatus(status);
-                person.toStringListHabits(executeHabits);
+                //List<HabitDto> executeHabits = person.getSortHabitsByStatus(status);
+                //toStringListHabits(executeHabits);
                 view();
             }
             case "no": {
-                System.out.println("\t\t\tСписок всех привычек пользователя со статусом «Не выполнена»");
+                System.out.println("Список всех привычек пользователя со статусом «Не выполнена»");
                 String status = StatusType.NO.name();
-                List<Habit> noExecuteHabits = person.getSortHabitsByStatus(status);
-                person.toStringListHabits(noExecuteHabits);
+                //List<HabitDto> noExecuteHabits = person.getSortHabitsByStatus(status);
+                //toStringListHabits(noExecuteHabits);
                 view();
             }
             case "0": {
-                System.out.println("\t\t\tВернуться в предыдущее меню нажмите 0");
                 habitsController.habits();
             }
-            default: habitsController.habits();
+            default:
+                habitsController.habits();
         }
     }
 }

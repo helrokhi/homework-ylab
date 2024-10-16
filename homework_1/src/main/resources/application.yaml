@@ -1,0 +1,10 @@
+dockerDb:
+  changeLogFile: src/main/resources/db/changelog/master.xml
+  url: jdbc:postgresql://localhost:5432/tracking_habit
+  username: admin
+  password: 11111111
+  database: tracking_habit
+  host: localhost
+
+liquibaseDb:
+  url: jdbc:postgresql://localhost/tracking_habit
