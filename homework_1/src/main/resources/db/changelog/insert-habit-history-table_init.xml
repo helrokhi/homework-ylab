@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="insert-initial-data-habit-history" author="Elena Yankovskaya" >
+        <sql>
+            INSERT INTO tracking_habit.habit_history (id, habit_id, status, time)
+            VALUES
+            ('100', '1000', 'EXECUTE', '2023-11-10 14:05:00.123456'),
+            ('101', '1000', 'EXECUTE', '2023-11-11 14:05:00.123456'),
+            ('102', '1000', 'EXECUTE', '2023-11-13 14:05:00.123456'),
+            ('103', '1000', 'EXECUTE', '2023-11-15 14:05:00.123456'),
+            ('104', '1000', 'EXECUTE', '2023-11-18 14:05:00.123456'),
+            ('105', '1000', 'EXECUTE', '2023-11-19 14:05:00.123456'),
+            ('106', '1000', 'EXECUTE', '2023-11-20 14:05:00.123456'),
+            ('107', '1000', 'EXECUTE', '2023-11-22 14:05:00.123456'),
+            ('108', '1000', 'EXECUTE', '2023-11-24 14:05:00.123456'),
+            ('109', '1000', 'EXECUTE', '2023-11-28 14:05:00.123456');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
