@@ -17,7 +17,7 @@ public class HabitController {
     private final ScannerService scannerService = new ScannerService();
 
     public void habit() {
-        HabitService habitService = new HabitService(person);
+        HabitService habitService = new HabitService();
         System.out.println("Работа с привычкой пользователя " + person);
         ArrayList<HabitDto> habits = habitService.getHabits(person.getId());
         switch (scannerService.habitManagementMenu()) {

@@ -2,7 +2,6 @@ package ru.ylab.controller;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.dto.*;
-import ru.ylab.dto.enums.Role;
 import ru.ylab.service.AuthService;
 import ru.ylab.service.ScannerService;
 import ru.ylab.service.UserService;
@@ -18,8 +17,7 @@ public class AuthController {
     public void login(String query) {
         AuthService authService = new AuthService();
         UserService userService = new UserService();
-        AccountController accountController = new AccountController();
-        AdminAccountController adminAccountController = new AdminAccountController();
+
         PersonDto personDto;
         while (true) {
             switch (query) {
@@ -37,7 +35,7 @@ public class AuthController {
                         System.out.println("Создаем пользователя " + regUser);
                         UserAuthDto user = authService.userRegistration(regUser);
                         personDto = authService.personRegistration(regUser);
-                        accountController.account(personDto);
+                        userService.account(personDto);
                     }
                     System.out.println("Пользователь с таким e-mail существует");
                     start();

@@ -15,7 +15,7 @@ public class TrackingHabitsController {
     public void tracking() {
         System.out.println("Отслеживание выполнения привычек пользователем " + person);
         UserService userService = new UserService();
-        HabitService habitService = new HabitService(person);
+        HabitService habitService = new HabitService();
         HabitHistoryService habitHistoryService = new HabitHistoryService();
 
         ArrayList<HabitDto> habits = habitService.getHabits(person.getId());

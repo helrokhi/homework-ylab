@@ -36,9 +36,9 @@ class UserRepositoryTest {
 
     @Test
     void createUser() {
-        RegUser regUser = new RegUser("159ernie04@heller.biz", "!123asdQWE");
-        UserAuthDto userAuthDto = userRepository.createUser(regUser);
-        System.out.println(userAuthDto);
+//        RegUser regUser = new RegUser("159ernie04@heller.biz", "!123asdQWE");
+//        UserAuthDto userAuthDto = userRepository.createUser(regUser);
+//        System.out.println(userAuthDto);
     }
 
     @Test

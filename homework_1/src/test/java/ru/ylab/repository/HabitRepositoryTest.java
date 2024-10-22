@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.ylab.dto.HabitDto;
 import ru.ylab.dto.RegHabit;
-import ru.ylab.dto.enums.Frequency;
 
 import java.util.ArrayList;
 

@@ -1,11 +1,13 @@
 package ru.ylab.service;
 
 import lombok.AllArgsConstructor;
+import ru.ylab.annotations.Loggable;
 import ru.ylab.dto.*;
 import ru.ylab.repository.UserRepository;
 import ru.ylab.repository.PersonRepository;
 
 @AllArgsConstructor
+@Loggable
 public class AuthService {
     public PersonDto personRegistration(RegUser regUser) {
         UserAuthDto userAuthDto = userAuthorization(regUser);

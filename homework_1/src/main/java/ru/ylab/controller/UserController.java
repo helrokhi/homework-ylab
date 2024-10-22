@@ -19,12 +19,12 @@ public class UserController {
         AuthController authController = new AuthController();
 
         UserService userService = new UserService();
-        PersonService personService = new PersonService(person);
+        PersonService personService = new PersonService();
 
         switch (scannerService.userManagementMenu()) {
             case "1": {
                 String name = scannerService.updateNamePerson(person);
-                personService.updateName(name);
+                personService.updateName(person, name);
                 user();
             }
             case "2": {

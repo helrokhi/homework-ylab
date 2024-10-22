@@ -17,7 +17,7 @@ public class ViewHabitsController {
     public void view() {
         HabitsController habitsController = new HabitsController(person);
 
-        HabitService habitService = new HabitService(person);
+        HabitService habitService = new HabitService();
         ArrayList<HabitDto> habits = habitService.getHabits(person.getId());
 
         System.out.println("Просмотр привычек:");

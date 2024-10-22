@@ -1,6 +1,7 @@
 package ru.ylab.repository;
 
 import lombok.NoArgsConstructor;
+import ru.ylab.config.DriverDB;
 import ru.ylab.dto.*;
 import ru.ylab.dto.enums.StatusType;
 
@@ -12,18 +13,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @NoArgsConstructor
-public class HabitHistoryRepository {
+public class HabitHistoryRepository implements DriverDB {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
             .withZone(ZoneId.of("Europe/Moscow"));
 
     public ArrayList<StatusDto> getHistory(Long habitId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         ArrayList<StatusDto> history = new ArrayList<>(0);
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             history = selectHistory(habitId, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -32,13 +29,9 @@ public class HabitHistoryRepository {
     }
 
     public StatusDto getStatusDtoById(Long statusId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         StatusDto statusDto = new StatusDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             statusDto = selectStatusById(statusId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -47,13 +40,10 @@ public class HabitHistoryRepository {
     }
 
     public StatusDto createStatus(HabitDto habitDto, RegStatus regStatus) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
         StatusDto statusDto = setStatusDtoByStatus(regStatus);
         Long statusId = 0L;
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             Long lastId = getLastId(connection);
 
             statusDto.setId(lastId + 1);
@@ -67,13 +57,9 @@ public class HabitHistoryRepository {
     }
 
     public StatusDto getLastStatusByHabitId(Long habitId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         Long statusId = 0L;
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
 
             statusId = selectStatusIdByHabitId(habitId, connection);
         } catch (SQLException exception) {

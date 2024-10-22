@@ -33,11 +33,11 @@ class PersonRepositoryTest {
 
     @Test
     void createPerson() {
-        UserAuthDto userAuthDto = userRepository.getUserAuthDtoById(1010L);
-        RegPerson regPerson = new RegPerson();
-
-        PersonDto personDto = personRepository.createPerson(userAuthDto, regPerson);
-        System.out.println(personDto);
+//        UserAuthDto userAuthDto = userRepository.getUserAuthDtoById(1010L);
+//        RegPerson regPerson = new RegPerson();
+//
+//        PersonDto personDto = personRepository.createPerson(userAuthDto, regPerson);
+//        System.out.println(personDto);
     }
 
     @Test

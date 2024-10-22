@@ -1,6 +1,7 @@
 package ru.ylab.repository;
 
 import lombok.NoArgsConstructor;
+import ru.ylab.config.DriverDB;
 import ru.ylab.dto.*;
 import ru.ylab.dto.enums.Frequency;
 
@@ -12,17 +13,13 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @NoArgsConstructor
-public class HabitRepository {
+public class HabitRepository implements DriverDB {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
             .withZone(ZoneId.of("Europe/Moscow"));
 
-    public ArrayList<HabitDto> getHabits(Long personId)  {
+    public ArrayList<HabitDto> getHabits(Long personId) {
         ArrayList<HabitDto> habitDtos = new ArrayList<>(0);
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             habitDtos = selectHabits(personId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -31,13 +28,10 @@ public class HabitRepository {
     }
 
     public HabitDto createHabit(Long personId, RegHabit regHabit) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
         HabitDto habitDto = setHabitDtoByRegHabit(regHabit);
         Long habitId = 0L;
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             Long lastId = getLastId(connection);
 
             habitDto.setId(lastId + 1);
@@ -51,11 +45,7 @@ public class HabitRepository {
     }
 
     public HabitDto updateHabitTitle(Long habitId, String title) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updateHabitDtoTitle(habitId, title, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -64,11 +54,7 @@ public class HabitRepository {
     }
 
     public HabitDto updateHabitText(Long habitId, String text) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updateHabitDtoText(habitId, text, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -77,11 +63,7 @@ public class HabitRepository {
     }
 
     public HabitDto updateHabitFrequency(Long habitId, String frequency) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updateHabitDtoFrequency(habitId, frequency, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -89,14 +71,19 @@ public class HabitRepository {
         return getHabitDtoById(habitId);
     }
 
-    public HabitDto getHabitDtoById(Long habitId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
+    public HabitDto updateHabitDto(HabitDto habitDto) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
+            update(habitDto, connection);
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        }
+        return getHabitDtoById(habitDto.getId());
+    }
 
+    public HabitDto getHabitDtoById(Long habitId) {
         HabitDto habitDto = new HabitDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             habitDto = selectHabitById(habitId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -105,12 +92,9 @@ public class HabitRepository {
     }
 
     public void deleteHabit(Long habitId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(url, user, password1);
+            connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB);
             connection.setAutoCommit(false);
 
             deleteHabitDto(habitId, connection);
@@ -119,8 +103,7 @@ public class HabitRepository {
             connection.commit();
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
-        }
-        finally {
+        } finally {
             try {
                 if (connection != null) {
                     connection.close();
@@ -205,7 +188,7 @@ public class HabitRepository {
     }
 
     private Long insertHabit(HabitDto habitDto, Connection connection) throws SQLException {
-        System.out.println("HabitDto "  + habitDto);
+        System.out.println("HabitDto " + habitDto);
         String insertDataSql =
                 "INSERT INTO " +
                         "tracking_habit.habit " +
@@ -227,6 +210,23 @@ public class HabitRepository {
 
         preparedStatement.executeUpdate();
         return habitDto.getId();
+    }
+
+    private void update(HabitDto habitDto, Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        String title = habitDto.getTitle();
+        String text = habitDto.getTitle();
+        String frequency = habitDto.getFrequency().name();
+        String updateDataSql =
+                "UPDATE " +
+                        "tracking_habit.habit h " +
+                        "SET title = '" + title + "' " +
+                        "SET text = '" + text + "' " +
+                        "SET frequency = '" + frequency + "' " +
+                        "WHERE h.id = '" + habitDto.getId() + "'";
+
+        ResultSet resultSet = statement.executeQuery(updateDataSql);
+        resultSet.close();
     }
 
     private void updateHabitDtoTitle(Long habitId, String title, Connection connection) throws SQLException {

@@ -1,6 +1,6 @@
 package ru.ylab.service;
 
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import ru.ylab.dto.*;
 import ru.ylab.dto.enums.Frequency;
 import ru.ylab.dto.enums.StatusType;
@@ -15,9 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@NoArgsConstructor
 public class HabitService {
-    private PersonDto person;
 
     public HabitDto create(PersonDto personDto, RegHabit regHabit) {
         HabitRepository habitRepository = new HabitRepository();
@@ -40,6 +39,11 @@ public class HabitService {
     public ArrayList<HabitDto> getHabits(Long personId) {
         HabitRepository habitRepository = new HabitRepository();
         return habitRepository.getHabits(personId);
+    }
+
+    public HabitDto update(HabitDto habitDto) {
+        HabitRepository habitRepository = new HabitRepository();
+        return habitRepository.updateHabitDto(habitDto);
     }
 
     public void toStringListHabits(List<HabitDto> habits) {

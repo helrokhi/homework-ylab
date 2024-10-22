@@ -1,17 +1,14 @@
 package ru.ylab.repository;
 
 import lombok.NoArgsConstructor;
+import ru.ylab.config.DriverDB;
 import ru.ylab.dto.*;
 
 import java.sql.*;
 
 @NoArgsConstructor
-public class PersonRepository {
+public class PersonRepository implements DriverDB {
     public PersonDto getPersonDto(String email, String password) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         PersonDto personDto = new PersonDto();
 
         UserRepository userRepository = new UserRepository();
@@ -19,7 +16,7 @@ public class PersonRepository {
 
         Long userId = userAuthDto.getId();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             personDto = selectPerson(userId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -28,13 +25,9 @@ public class PersonRepository {
     }
 
     public PersonDto getPersonDtoById(Long personId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         PersonDto personDto = new PersonDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             personDto = selectPersonById(personId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -43,14 +36,10 @@ public class PersonRepository {
     }
 
     public PersonDto createPerson(UserAuthDto userAuthDto, RegPerson regPerson) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         PersonDto personDto = setPersonDtoByRegPerson(regPerson);
         Long personId = 0L;
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             Long lastId = getLastId(connection);
 
             personDto.setId(lastId + 1);
@@ -64,11 +53,7 @@ public class PersonRepository {
     }
 
     public PersonDto updatePersonName(Long personId, String name) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updatePersonDtoName(personId, name, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -76,14 +61,20 @@ public class PersonRepository {
         return getPersonDtoById(personId);
     }
 
+    public PersonDto updatePerson(PersonDto personDto) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
+            updatePersonDto(personDto, connection);
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        }
+        return getPersonDtoById(personDto.getId());
+    }
+
     public void deletePerson(PersonDto personDto) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
         Connection connection = null;
 
         try {
-            connection = DriverManager.getConnection(url, user, password1);
+            connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB);
             connection.setAutoCommit(false);
 
             deletePersonDto(personDto.getId(), connection);
@@ -165,6 +156,19 @@ public class PersonRepository {
                         "tracking_habit.person p " +
                         "SET name = " +
                         "'" + name + "' " +
+                        "WHERE p.id = '" + personId + "'";
+
+        statement.execute(updateDataSql);
+    }
+
+    private void updatePersonDto(PersonDto personDto, Connection connection) throws SQLException {
+        String personId = personDto.getId().toString();
+        String name = personDto.getName();
+        Statement statement = connection.createStatement();
+        String updateDataSql =
+                "UPDATE " +
+                        "tracking_habit.person p " +
+                        "SET name = '" + name + "' " +
                         "WHERE p.id = '" + personId + "'";
 
         statement.execute(updateDataSql);

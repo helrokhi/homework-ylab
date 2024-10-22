@@ -1,7 +1,7 @@
 package ru.ylab.service;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import ru.ylab.annotations.Loggable;
 import ru.ylab.controller.AccountController;
 import ru.ylab.controller.AdminAccountController;
 import ru.ylab.dto.PersonDto;
@@ -11,8 +11,8 @@ import ru.ylab.dto.enums.Role;
 import ru.ylab.repository.UserRepository;
 
 @NoArgsConstructor
+@Loggable
 public class UserService {
-    private PersonDto person;
 
     public void updateEmail(PersonDto person, String email) {
         UserRepository userRepository = new UserRepository();
@@ -26,12 +26,17 @@ public class UserService {
         System.out.println("Пароль пользователя изменен " + person + " " + userAuthDto);
     }
 
+    public void update(UserAuthDto userAuthDto) {
+        UserRepository userRepository = new UserRepository();
+        userRepository.updateUser(userAuthDto);
+    }
+
     public UserAuthDto getUserByEmail(RegUser regUser) {
         UserRepository userRepository = new UserRepository();
         return (regUser != null) ? userRepository.getUserAuthDtoByEmail(regUser.getEmail()) : null;
     }
 
-    private UserAuthDto getUserById(Long userId) {
+    public UserAuthDto getUserById(Long userId) {
         UserRepository userRepository = new UserRepository();
         return userRepository.getUserAuthDtoById(userId);
     }
@@ -46,5 +51,9 @@ public class UserService {
         } else {
             accountController.account(person);
         }
+    }
+    public RegUser createRegUser(String email, String password) {
+        RegUser regUser = new RegUser(email, password);
+        return (!regUser.getEmail().isBlank() && !regUser.getPassword().isBlank()) ? regUser : null;
     }
 }
