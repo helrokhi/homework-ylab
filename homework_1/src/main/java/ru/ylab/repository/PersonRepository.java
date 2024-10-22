@@ -4,11 +4,10 @@ import lombok.NoArgsConstructor;
 import ru.ylab.dto.*;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 @NoArgsConstructor
 public class PersonRepository {
-    public PersonDto getPersonDtoByEmail(String email, String password) {
+    public PersonDto getPersonDto(String email, String password) {
         String url = "jdbc:postgresql://localhost:5432/tracking_habit";
         String user = "admin";
         String password1 = "11111111";
@@ -92,8 +91,10 @@ public class PersonRepository {
 
             String habitIds = selectHabitIds(personDto.getId(), connection);
 
-            deleteHabitDtos(habitIds, connection);
-            deleteStatusDtos(habitIds, connection);
+            if (!habitIds.isBlank()) {
+                deleteHabitDtos(habitIds, connection);
+                deleteStatusDtos(habitIds, connection);
+            }
 
             connection.commit();
         } catch (SQLException exception) {
@@ -226,7 +227,6 @@ public class PersonRepository {
     }
 
     private String selectHabitIds(Long personId, Connection connection) throws SQLException {
-        ArrayList<Long> habitIds = new ArrayList<>(0);
         StringBuilder sb =new StringBuilder();
         Statement statement = connection.createStatement();
         String sql =
@@ -238,7 +238,6 @@ public class PersonRepository {
         ResultSet resultSet = statement.executeQuery(sql);
 
         while (resultSet.next()) {
-            habitIds.add(resultSet.getLong(1));
             sb.append(!sb.isEmpty()? ", " : "")
                     .append("'")
                     .append(resultSet.getLong(1))

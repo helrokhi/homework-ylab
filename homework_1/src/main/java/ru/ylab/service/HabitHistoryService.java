@@ -7,6 +7,7 @@ import ru.ylab.dto.StatusDto;
 import ru.ylab.repository.HabitHistoryRepository;
 
 import java.util.ArrayList;
+
 @NoArgsConstructor
 public class HabitHistoryService {
 

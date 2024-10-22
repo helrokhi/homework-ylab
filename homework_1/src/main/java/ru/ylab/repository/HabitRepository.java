@@ -30,7 +30,7 @@ public class HabitRepository {
         return habitDtos;
     }
 
-    public HabitDto createHabit(PersonDto personDto, RegHabit regHabit) {
+    public HabitDto createHabit(Long personId, RegHabit regHabit) {
         String url = "jdbc:postgresql://localhost:5432/tracking_habit";
         String user = "admin";
         String password1 = "11111111";
@@ -41,7 +41,7 @@ public class HabitRepository {
             Long lastId = getLastId(connection);
 
             habitDto.setId(lastId + 1);
-            habitDto.setPersonId(personDto.getId());
+            habitDto.setPersonId(personId);
 
             habitId = insertHabit(habitDto, connection);
         } catch (SQLException exception) {

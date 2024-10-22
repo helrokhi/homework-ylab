@@ -17,8 +17,6 @@ public class HabitDto {
     private Long personId;
     private String title;
     private String text;
-    private Frequency frequency;
     private OffsetDateTime time;
-
-
+    private Frequency frequency;
 }

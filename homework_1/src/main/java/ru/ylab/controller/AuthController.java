@@ -2,6 +2,7 @@ package ru.ylab.controller;
 
 import lombok.NoArgsConstructor;
 import ru.ylab.dto.*;
+import ru.ylab.dto.enums.Role;
 import ru.ylab.service.AuthService;
 import ru.ylab.service.ScannerService;
 import ru.ylab.service.UserService;
@@ -18,6 +19,7 @@ public class AuthController {
         AuthService authService = new AuthService();
         UserService userService = new UserService();
         AccountController accountController = new AccountController();
+        AdminAccountController adminAccountController = new AdminAccountController();
         PersonDto personDto;
         while (true) {
             switch (query) {
@@ -48,7 +50,7 @@ public class AuthController {
 
                     if (userAuthDto != null && user.getPassword().equals(userAuthDto.getPassword())) {
                         personDto = authService.personAuthorization(user);
-                        accountController.account(personDto);
+                        userService.account(personDto);
                     }
 
                     System.out.println("Такого пользователя не существует");

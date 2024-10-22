@@ -15,7 +15,7 @@ public class AuthService {
 
     public PersonDto personAuthorization(RegUser user) {
         PersonRepository personRepository = new PersonRepository();
-        return personRepository.getPersonDtoByEmail(user.getEmail(), user.getPassword());
+        return personRepository.getPersonDto(user.getEmail(), user.getPassword());
     }
 
     public UserAuthDto userAuthorization(RegUser user) {

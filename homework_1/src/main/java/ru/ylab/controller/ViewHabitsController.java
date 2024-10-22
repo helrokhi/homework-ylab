@@ -18,7 +18,7 @@ public class ViewHabitsController {
         HabitsController habitsController = new HabitsController(person);
 
         HabitService habitService = new HabitService(person);
-        ArrayList<HabitDto> habits = habitService.getHabits();
+        ArrayList<HabitDto> habits = habitService.getHabits(person.getId());
 
         System.out.println("Просмотр привычек:");
         switch (scannerService.menuViewHabits()) {
@@ -27,25 +27,23 @@ public class ViewHabitsController {
                 habitService.toStringListHabits(habits);
                 view();
             }
-            case "sort": {
+            case "SORT": {
                 System.out.println("Список всех привычек пользователя," +
                         "отсортированный по дате создания");
                 List<HabitDto> sortHabits = habitService.getSortHabitsByTime(habits);
                 habitService.toStringListHabits(sortHabits);
                 view();
             }
-            case "execute": {
+            case "EXECUTE": {
                 System.out.println("Список всех привычек пользователя со статусом «Выполнена»");
-                String status = StatusType.EXECUTE.name();
-                //List<HabitDto> executeHabits = person.getSortHabitsByStatus(status);
-                //toStringListHabits(executeHabits);
+                List<HabitDto> executeHabits = habitService.getSortHabitsByStatus(habits, StatusType.EXECUTE);
+                habitService.toStringListHabits(executeHabits);
                 view();
             }
-            case "no": {
+            case "NO": {
                 System.out.println("Список всех привычек пользователя со статусом «Не выполнена»");
-                String status = StatusType.NO.name();
-                //List<HabitDto> noExecuteHabits = person.getSortHabitsByStatus(status);
-                //toStringListHabits(noExecuteHabits);
+                List<HabitDto> executeHabits = habitService.getSortHabitsByStatus(habits, StatusType.NO);
+                habitService.toStringListHabits(executeHabits);
                 view();
             }
             case "0": {

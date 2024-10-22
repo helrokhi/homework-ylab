@@ -3,6 +3,7 @@ package ru.ylab.controller;
 import lombok.AllArgsConstructor;
 import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
+import ru.ylab.service.UserService;
 
 @AllArgsConstructor
 public class HabitsController {
@@ -10,7 +11,7 @@ public class HabitsController {
     private final ScannerService scannerService = new ScannerService();
 
     public void habits() {
-        AccountController accountController = new AccountController();
+        UserService userService = new UserService();
         HabitController habitController = new HabitController(person);
         ViewHabitsController viewHabitsController = new ViewHabitsController(person);
 
@@ -22,11 +23,8 @@ public class HabitsController {
             case "2": {
                 habitController.habit();
             }
-            case "0": {
-                accountController.account(person);
-            }
-            default:
-                accountController.account(person);
+            case "0": userService.account(person);
+            default: userService.account(person);
         }
     }
 }

@@ -66,6 +66,22 @@ public class HabitHistoryRepository {
         return getStatusDtoById(statusId);
     }
 
+    public StatusDto getLastStatusByHabitId(Long habitId) {
+        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
+        String user = "admin";
+        String password1 = "11111111";
+
+        Long statusId = 0L;
+
+        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+
+            statusId = selectStatusIdByHabitId(habitId, connection);
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        }
+        return getStatusDtoById(statusId);
+    }
+
     private ArrayList<StatusDto> selectHistory(Long habitId, Connection connection) throws SQLException {
         ArrayList<StatusDto> history = new ArrayList<>(0);
         Statement statement = connection.createStatement();
@@ -150,6 +166,25 @@ public class HabitHistoryRepository {
 
         preparedStatement.executeUpdate();
         return statusDto.getId();
+    }
+
+    private Long selectStatusIdByHabitId(Long habitId, Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        String lastIdSql =
+                "SELECT " +
+                        "id " +
+                        "FROM tracking_habit.habit_history h " +
+                        "WHERE h.habit_id = '" + habitId + "' " +
+                        "ORDER BY h.time " +
+                        "DESC LIMIT 1";
+
+        ResultSet resultSet = statement.executeQuery(lastIdSql);
+        long lastId = 0L;
+        while (resultSet.next()) {
+            lastId = resultSet.getLong(1);
+        }
+        resultSet.close();
+        return lastId;
     }
 
     private StatusDto setStatusDtoByStatus(RegStatus regStatus) {
