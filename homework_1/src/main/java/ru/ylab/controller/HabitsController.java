@@ -1,36 +1,32 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
 
+@AllArgsConstructor
 public class HabitsController {
-    private final Person person;
+    private PersonDto person;
     private final ScannerService scannerService = new ScannerService();
-    private final HabitController habitController;
-    private final AccountController accountController;
-
-    public HabitsController(Person person, Database database) {
-        this.person = person;
-        accountController = new AccountController(person, database);
-        habitController = new HabitController(person, database);
-    }
 
     public void habits() {
-        System.out.println("\t\tУправление привычками " + person);
+        AccountController accountController = new AccountController();
+        HabitController habitController = new HabitController(person);
+        ViewHabitsController viewHabitsController = new ViewHabitsController(person);
+
+        System.out.println("Управление привычками " + person);
         switch (scannerService.menuHabits()) {
             case "1": {
-                person.getAllHabits();
-                habits();
+                viewHabitsController.view();
             }
             case "2": {
                 habitController.habit();
             }
             case "0": {
-                accountController.account();
+                accountController.account(person);
             }
             default:
-                accountController.account();
+                accountController.account(person);
         }
     }
 }

@@ -1,26 +1,20 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
+import lombok.NoArgsConstructor;
+import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
 
+@NoArgsConstructor
 public class AccountController {
-    private final Person person;
-    private final Database database;
     private final ScannerService scannerService = new ScannerService();
 
-    public AccountController(Person person, Database database) {
-        this.person = person;
-        this.database = database;
-    }
-
-    public void account() {
-        AuthController authController = new AuthController(database);
-        UserController userController = new UserController(person, database);
-        HabitsController habitsController = new HabitsController(person, database);
+    public void account(PersonDto person) {
+        AuthController authController = new AuthController();
+        UserController userController = new UserController(person);
+        HabitsController habitsController = new HabitsController(person);
         TrackingHabitsController trackingHabitsController =
-                new TrackingHabitsController(person, database);
-        StatisticsController statisticsController = new StatisticsController(person, database);
+                new TrackingHabitsController(person);
+        StatisticsController statisticsController = new StatisticsController(person);
 
         System.out.println("Добро пожаловать в личный кабинет пользователь: " + person);
         switch (scannerService.menuAccount()) {

@@ -1,38 +1,56 @@
 package ru.ylab.service;
 
-import ru.ylab.dto.Habit;
-import ru.ylab.dto.Person;
-import ru.ylab.dto.Status;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.*;
+import ru.ylab.repository.HabitRepository;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class HabitService {
-    private final Person person;
+    private PersonDto person;
 
-    public HabitService(Person person) {
-        this.person = person;
+    public HabitDto create(RegHabit regHabit) {
+        HabitRepository habitRepository = new HabitRepository();
+        HabitDto habitDto = habitRepository.createHabit(person, regHabit);
+        System.out.println("Создана привычка " + habitDto);
+        return habitDto;
     }
 
-    public void create(Habit habit) {
-        person.addHabit(habit);
+    public HabitDto getHabitByIndex(Long habitId) {
+        HabitRepository habitRepository = new HabitRepository();
+        return habitRepository.getHabitDtoById(habitId);
     }
 
-    public Habit getHabitByIndex(String index) {
-        return person.getHabitByIndex(Integer.parseInt(index));
-    }
-
-    public void delete(Habit habit) {
-        person.deleteHabit(habit);
+    public void delete(HabitDto habit) {
+        HabitRepository habitRepository = new HabitRepository();
+        habitRepository.deleteHabit(habit.getId());
         System.out.println("Привычка удалена " + habit);
     }
 
-    public void updateStatusHistory(int index, Status status) {
-        person.updateHabit(index, status);
+    public ArrayList<HabitDto> getHabits() {
+        HabitRepository habitRepository = new HabitRepository();
+        return habitRepository.getHabits(person.getId());
     }
 
-    public ArrayList<Status> getHistory(Habit habit) {
-        int index = person.getHabits().indexOf(habit);
-        return person.getHabitByIndex(index).getHistory();
+    public void toStringListHabits(List<HabitDto> habits) {
+        if (habits.isEmpty()) {
+            System.out.println("Нет привычек у пользователя");
+        } else {
+            System.out.println("Список привычек пользователя");
+            for (HabitDto habit : habits) {
+                System.out.println("\t" + habit.getId() + ": " + habit);
+            }
+        }
+    }
+
+    public List<HabitDto> getSortHabitsByTime(ArrayList<HabitDto> habits) {
+        return habits
+                .stream()
+                .sorted(Comparator.comparing(HabitDto::getTime))
+                .collect(Collectors.toList());
     }
 }

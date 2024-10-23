@@ -1,42 +1,30 @@
 package ru.ylab.service;
 
-import ru.ylab.controller.AccountController;
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Person;
-import ru.ylab.dto.User;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.*;
+import ru.ylab.repository.UserRepository;
+import ru.ylab.repository.PersonRepository;
 
+@AllArgsConstructor
 public class AuthService {
-    private final Database database;
-
-    public AuthService(Database database) {
-        this.database = database;
+    public PersonDto personRegistration(RegUser regUser) {
+        UserAuthDto userAuthDto = userAuthorization(regUser);
+        PersonRepository personRepository = new PersonRepository();
+        return (regUser != null) ? personRepository.createPerson(userAuthDto, new RegPerson()) : null;
     }
 
-    public Person registration(User user) {
-        database.addUser(user);
-        Person person = new Person(user);
-        database.addPerson(person);
-        new AccountController(person, database).account();
-        return person;
+    public PersonDto personAuthorization(RegUser user) {
+        PersonRepository personRepository = new PersonRepository();
+        return personRepository.getPersonDtoByEmail(user.getEmail(), user.getPassword());
     }
 
-    public Person authorization(User user) {
-        Person person = database.getPerson(user);
-        new AccountController(person, database).account();
-        return person;
+    public UserAuthDto userAuthorization(RegUser user) {
+        UserRepository userRepository = new UserRepository();
+        return (user != null) ? userRepository.getUserAuthDto(user.getEmail(), user.getPassword()) : null;
     }
 
-    public boolean isValidEmail(String email) {
-        String regexEmail = "^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+(\\.[a-z]{2,}|\\.xn--[a-z0-9]+)$";
-        return email.matches(regexEmail);
-    }
-
-    public boolean isValidPassword(String password) {
-        String regexPassword = "(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}";
-        return password.matches(regexPassword);
-    }
-
-    public boolean isValidUser(User user) {
-        return (isValidEmail(user.getEmail()) && isValidPassword(user.getPassword()));
+    public UserAuthDto userRegistration(RegUser user) {
+        UserRepository userRepository = new UserRepository();
+        return (user != null) ? userRepository.createUser(user) : null;
     }
 }

@@ -1,29 +1,20 @@
 package ru.ylab.controller;
 
-import ru.ylab.dto.Database;
-import ru.ylab.dto.Habit;
-import ru.ylab.dto.Person;
+import lombok.AllArgsConstructor;
+import ru.ylab.dto.*;
 import ru.ylab.service.HabitUpdateService;
 import ru.ylab.service.ScannerService;
 
+@AllArgsConstructor
 public class HabitUpdateController {
-    private final Habit habit;
-    private final Person person;
-    private final Database database;
+    private HabitDto habit;
+    private PersonDto person;
 
     private final ScannerService scannerService = new ScannerService();
 
-    private final HabitUpdateService habitUpdateService;
-
-    public HabitUpdateController(Habit habit, Person person, Database database) {
-        this.habit = habit;
-        this.person = person;
-        this.database = database;
-        habitUpdateService = new HabitUpdateService(habit);
-    }
-
     public void habitUpdate() {
-        System.out.println("\t\tРедактирование привычки " + habit);
+        HabitUpdateService habitUpdateService = new HabitUpdateService(habit);
+        System.out.println("Редактирование привычки " + habit);
         switch (scannerService.menuUpdateHabit()) {
             case "1": {
                 System.out.println("Изменение названия привычки " + habit);
@@ -41,10 +32,10 @@ public class HabitUpdateController {
                 habitUpdate();
             }
             case "0": {
-                new HabitController(person, database).habit();
+                new HabitController(person).habit();
             }
             default:
-                new HabitController(person, database).habit();
+                new HabitController(person).habit();
         }
     }
 }
