@@ -17,14 +17,14 @@ public class HabitController {
     private final ScannerService scannerService = new ScannerService();
 
     public void habit() {
-        HabitService habitService = new HabitService(person);
+        HabitService habitService = new HabitService();
         System.out.println("Работа с привычкой пользователя " + person);
-        ArrayList<HabitDto> habits = habitService.getHabits();
+        ArrayList<HabitDto> habits = habitService.getHabits(person.getId());
         switch (scannerService.habitManagementMenu()) {
             case "1": {
                 System.out.println("Создание новой привычки");
                 RegHabit regHabit = scannerService.createRegHabit();
-                HabitDto habitDto = habitService.create(regHabit);
+                HabitDto habitDto = habitService.create(person, regHabit);
                 System.out.println("Новая привычка " + habitDto);
                 habit();
             }

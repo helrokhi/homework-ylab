@@ -3,6 +3,7 @@ package ru.ylab.controller;
 import lombok.AllArgsConstructor;
 import ru.ylab.dto.PersonDto;
 import ru.ylab.service.ScannerService;
+import ru.ylab.service.UserService;
 
 @AllArgsConstructor
 public class StatisticsController {
@@ -12,7 +13,7 @@ public class StatisticsController {
     public void statistics() {
         System.out.println("Статистика и аналитика пользователя " + person);
 
-        AccountController accountController = new AccountController();
+        UserService userService = new UserService();
         switch (scannerService.statisticsMenu()) {
             case "1": {
                 System.out.println("Подсчет текущих серий выполнения привычек\n");
@@ -29,12 +30,8 @@ public class StatisticsController {
                 //* какой-то код
                 statistics();
             }
-            case "0": {
-                System.out.println("Вернуться в личный кабинет");
-                accountController.account(person);
-            }
-            default:
-                accountController.account(person);
+            case "0": userService.account(person);
+            default: userService.account(person);
         }
     }
 }

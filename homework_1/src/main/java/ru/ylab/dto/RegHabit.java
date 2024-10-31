@@ -4,6 +4,7 @@ import lombok.Getter;
 import ru.ylab.dto.enums.Frequency;
 
 import java.time.OffsetDateTime;
+import java.util.Locale;
 
 @Getter
 public class RegHabit {
@@ -20,7 +21,7 @@ public class RegHabit {
     }
 
     public Frequency setFrequency(String query) {
-        if (query.equals("weekly")) {
+        if (query.equals("WEEKLY")) {
             return Frequency.WEEKLY;
         }
         return Frequency.DAILY;

@@ -1,6 +1,7 @@
 package ru.ylab.repository;
 
 import lombok.NoArgsConstructor;
+import ru.ylab.config.DriverDB;
 import ru.ylab.dto.*;
 import ru.ylab.dto.enums.Role;
 
@@ -8,15 +9,11 @@ import java.sql.*;
 import java.util.Locale;
 
 @NoArgsConstructor
-public class UserRepository {
+public class UserRepository implements DriverDB {
     public UserAuthDto getUserAuthDto(String email, String password) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         UserAuthDto userAuthDto = new UserAuthDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             userAuthDto = selectUser(email, password, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -25,13 +22,9 @@ public class UserRepository {
     }
 
     public UserAuthDto getUserAuthDtoByEmail(String email) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         UserAuthDto userAuthDto = new UserAuthDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             userAuthDto = selectUserByEmail(email, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -40,13 +33,9 @@ public class UserRepository {
     }
 
     public UserAuthDto getUserAuthDtoById(Long userId) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
         UserAuthDto userAuthDto = new UserAuthDto();
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             userAuthDto = selectUserById(userId, connection);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -55,14 +44,11 @@ public class UserRepository {
     }
 
     public UserAuthDto createUser(RegUser regUser) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
         Long userId = 0L;
 
         UserAuthDto userAuthDto = setUserAuthDtoByRegUser(regUser);
 
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             Long lastId = getLastId(connection);
 
             userAuthDto.setId(lastId + 1);
@@ -75,11 +61,7 @@ public class UserRepository {
     }
 
     public UserAuthDto updateUserEmail(Long userId, String email) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updateUserAuthDtoEmail(userId, email, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
@@ -88,16 +70,21 @@ public class UserRepository {
     }
 
     public UserAuthDto updateUserPassword(Long userId, String name) {
-        String url = "jdbc:postgresql://localhost:5432/tracking_habit";
-        String user = "admin";
-        String password1 = "11111111";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password1)) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
             updateUserAuthDtoPassword(userId, name, connection);
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
         }
         return getUserAuthDtoById(userId);
+    }
+
+    public UserAuthDto updateUser(UserAuthDto userAuthDto) {
+        try (Connection connection = DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB)) {
+            updateUserAuthDto(userAuthDto, connection);
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        }
+        return getUserAuthDtoById(userAuthDto.getId());
     }
 
     private UserAuthDto selectUser(String email, String password, Connection connection) throws SQLException {
@@ -209,6 +196,21 @@ public class UserRepository {
                         "tracking_habit.user u " +
                         "SET password = " +
                         "'" + password + "' " +
+                        "WHERE u.id = '" + userId + "'";
+
+        statement.execute(updateDataSql);
+    }
+
+    private void updateUserAuthDto(UserAuthDto userAuthDto, Connection connection) throws SQLException {
+        String userId = userAuthDto.getId().toString();
+        String password = userAuthDto.getPassword();
+        String email = userAuthDto.getEmail();
+        Statement statement = connection.createStatement();
+        String updateDataSql =
+                "UPDATE " +
+                        "tracking_habit.user u " +
+                        "SET email = '" + email + "' " +
+                        "SET password = '" + password + "' " +
                         "WHERE u.id = '" + userId + "'";
 
         statement.execute(updateDataSql);

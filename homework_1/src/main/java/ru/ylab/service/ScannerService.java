@@ -10,11 +10,16 @@ public class ScannerService {
     private final String TWO = "-- 2 -- ";
     private final String THREE = "-- 3 -- ";
     private final String FOUR = "-- 4 -- ";
+    private final String FIVE = "-- 5 -- ";
     private final String ZERO = "-- 0 -- ";
     private final String DELETE = "-- DELETE -- ";
     private final String SORT = "-- SORT -- ";
     private final String EXECUTE = "-- EXECUTE -- ";
     private final String NO = "-- NO -- ";
+
+    private final String DAY = "-- SORT -- ";
+    private final String WEEK = "-- WEEK -- ";
+    private final String MONTH = "-- MONTH -- ";
 
 
     public String startMenu() {
@@ -33,7 +38,19 @@ public class ScannerService {
                 ONE + "Управление пользователем\n" +
                         TWO + "Управление привычками\n" +
                         THREE + "Отслеживание выполнения привычек пользователя\n" +
-                        FOUR + "Статистика и аналитика нажмите 4\n" +
+                        FOUR + "Статистика и аналитика\n" +
+                        ZERO + "Выйти из личного кабинета");
+        return scanner.nextLine().trim();
+    }
+
+    public String menuAdminAccount() {
+        scanner = new Scanner(System.in);
+        System.out.println(
+                ONE + "Управление пользователем\n" +
+                        TWO + "Управление привычками\n" +
+                        THREE + "Отслеживание выполнения привычек пользователя\n" +
+                        FOUR + "Статистика и аналитика\n" +
+                        FIVE + "Администрирование\n" +
                         ZERO + "Выйти из личного кабинета");
         return scanner.nextLine().trim();
     }
@@ -70,7 +87,7 @@ public class ScannerService {
         return scanner.nextLine().trim();
     }
 
-    public String habitManagementMenu (){
+    public String habitManagementMenu() {
         scanner = new Scanner(System.in);
         System.out.println(
                 ONE + "Создание привычки\n" +
@@ -87,10 +104,10 @@ public class ScannerService {
                         TWO + "Изменить описание\n" +
                         THREE + "Изменить частоту\n" +
                         ZERO + "Вернуться в личный кабинет");
-       return scanner.nextLine().trim();
+        return scanner.nextLine().trim();
     }
 
-    public String trackingHabitsMenu(){
+    public String trackingHabitsMenu() {
         scanner = new Scanner(System.in);
         System.out.println(
                 ONE + "Отметить выполнение привычки\n" +
@@ -100,12 +117,33 @@ public class ScannerService {
         return scanner.nextLine().trim();
     }
 
-    public String statisticsMenu(){
+    public String statisticsMenu() {
         scanner = new Scanner(System.in);
         System.out.println(
                 ONE + "Подсчет текущих серий выполнения привычек\n" +
                         TWO + "Процент успешного выполнения привычек за определенный период\n" +
                         THREE + "Формирование отчета для пользователя по прогрессу выполнения\n" +
+                        ZERO + "Вернуться в личный кабинет");
+        return scanner.nextLine().trim();
+    }
+
+    public String habitFulfillmentStatisticsMenu() {
+        scanner = new Scanner(System.in);
+        System.out.println(
+                DAY + "Статистика выполнения привычки за день\n" +
+                        WEEK + "Статистика выполнения привычки за неделю\n" +
+                        MONTH + "Статистика выполнения привычки за месяц\n" +
+                        ZERO + "Вернуться в личный кабинет");
+        return scanner.nextLine().trim();
+    }
+
+    public String administrationMenu() {
+        scanner = new Scanner(System.in);
+        System.out.println(
+                ONE + "Список пользователей\n" +
+                        TWO + "Список привычек\n" +
+                        THREE + "Блокировка пользователя\n" +
+                        FOUR + "Удаление пользователя\n" +
                         ZERO + "Вернуться в личный кабинет");
         return scanner.nextLine().trim();
     }
@@ -119,7 +157,7 @@ public class ScannerService {
         String password = scanner.nextLine().trim();
 
         RegUser regUser = new RegUser(email, password);
-        return (!regUser.getEmail().isBlank() && !regUser.getPassword().isBlank())? regUser : null;
+        return (!regUser.getEmail().isBlank() && !regUser.getPassword().isBlank()) ? regUser : null;
     }
 
     public String createIndexHabit() {

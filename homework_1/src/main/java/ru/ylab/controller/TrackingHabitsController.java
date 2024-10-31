@@ -2,6 +2,7 @@ package ru.ylab.controller;
 
 import lombok.AllArgsConstructor;
 import ru.ylab.dto.*;
+import ru.ylab.dto.enums.Role;
 import ru.ylab.service.*;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ public class TrackingHabitsController {
     private final ScannerService scannerService = new ScannerService();
 
     public void tracking() {
-        System.out.println("\t\tОтслеживание выполнения привычек пользователем " + person);
-        AccountController accountController = new AccountController();
-        HabitService habitService = new HabitService(person);
+        System.out.println("Отслеживание выполнения привычек пользователем " + person);
+        UserService userService = new UserService();
+        HabitService habitService = new HabitService();
         HabitHistoryService habitHistoryService = new HabitHistoryService();
 
-        ArrayList<HabitDto> habits = habitService.getHabits();
+        ArrayList<HabitDto> habits = habitService.getHabits(person.getId());
 
         switch (scannerService.trackingHabitsMenu()) {
             case "1": {
@@ -53,16 +54,20 @@ public class TrackingHabitsController {
             case "3": {
                 System.out.println("Статистика выполнения привычки " +
                         "за указанный период (день, неделя, месяц)");
-                //* какой-то код
-
-                tracking();
+                if (habits.isEmpty()) {
+                    System.out.println("Посмотреть статистику выполнения привычки" +
+                            " невозможно список привычек пуст");
+                    tracking();
+                }
+                habitService.toStringListHabits(habits);
+                String index = scannerService.createIndexHabit();
+                HabitDto habit = habitService.getHabitByIndex(Long.valueOf(index));
+                HabitFulfillmentStatisticsController habitFulfillmentStatisticsController =
+                        new HabitFulfillmentStatisticsController(person);
+                habitFulfillmentStatisticsController.fulfillment(habit);
             }
-            case "0": {
-                System.out.println("Вернуться в личный кабинет");
-                accountController.account(person);
-            }
-            default:
-                accountController.account(person);
+            case "0": userService.account(person);
+            default: userService.account(person);
         }
     }
 }

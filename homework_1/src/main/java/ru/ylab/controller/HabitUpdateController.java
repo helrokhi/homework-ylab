@@ -31,11 +31,8 @@ public class HabitUpdateController {
                 habitUpdateService.updateFrequency(scannerService.updateFrequencyHabit());
                 habitUpdate();
             }
-            case "0": {
-                new HabitController(person).habit();
-            }
-            default:
-                new HabitController(person).habit();
+            case "0": new HabitController(person).habit();
+            default: new HabitController(person).habit();
         }
     }
 }

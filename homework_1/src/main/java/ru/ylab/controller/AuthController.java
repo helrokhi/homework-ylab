@@ -17,7 +17,7 @@ public class AuthController {
     public void login(String query) {
         AuthService authService = new AuthService();
         UserService userService = new UserService();
-        AccountController accountController = new AccountController();
+
         PersonDto personDto;
         while (true) {
             switch (query) {
@@ -35,7 +35,7 @@ public class AuthController {
                         System.out.println("Создаем пользователя " + regUser);
                         UserAuthDto user = authService.userRegistration(regUser);
                         personDto = authService.personRegistration(regUser);
-                        accountController.account(personDto);
+                        userService.account(personDto);
                     }
                     System.out.println("Пользователь с таким e-mail существует");
                     start();
@@ -48,7 +48,7 @@ public class AuthController {
 
                     if (userAuthDto != null && user.getPassword().equals(userAuthDto.getPassword())) {
                         personDto = authService.personAuthorization(user);
-                        accountController.account(personDto);
+                        userService.account(personDto);
                     }
 
                     System.out.println("Такого пользователя не существует");

@@ -1,9 +1,11 @@
 package ru.ylab.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
 import ru.ylab.dto.enums.Role;
 
 @Getter
+@JsonAutoDetect
 public class RegUser {
     private final String email;
     private final String password;
